@@ -1,4 +1,4 @@
-# strings-plugin
+# Currency Conversion Plugin
 
 ## Installation
 
