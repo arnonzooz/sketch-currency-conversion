@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/sketch-hq/SketchAPI/develop/docs/sketch-plugin-manifest-schema.json",
+  "icon": "icon.png",
+  "disableCocoaScriptPreprocessor": true,
+  "version": "2.0",
+  "commands": [
+    {
+      "name": "Convert Currencies",
+      "identifier": "conv-currencies",
+      "script": "./conv-currencies.js",
+      "handler": "convertMe",
+      "shortcut": "ctrl shift a"
+    }
+  ],
+  "menu": {
+    "title": "Convert Currencies",
+    "items": [
+      "conv-currencies"
+    ]
+  }
+}

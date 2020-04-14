@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/sketch-hq/SketchAPI/develop/docs/sketch-plugin-manifest-schema.json",
+  "icon": "icon.png",
+  "disableCocoaScriptPreprocessor": true,
+  "version": "2.0",
+  "commands": [
+    {
+      "name": "Convert Currencies",
+      "identifier": "conv-currencies",
+      "script": "__conv-currencies.js",
+      "handler": "convertMe",
+      "shortcut": "ctrl shift a"
+    }
+  ],
+  "menu": {
+    "title": "Convert Currencies",
+    "items": [
+      "conv-currencies"
+    ]
+  },
+  "description": "Sketch plugin for converting currencies",
+  "name": "currency-plugin",
+  "identifier": "currency-plugin",
+  "appcast": "https://raw.githubusercontent.com/arnonzooz/sketch-currency-conversion/master/.appcast.xml",
+  "author": "Arnon",
+  "authorEmail": "arnon.b@zooz.com"
+}
