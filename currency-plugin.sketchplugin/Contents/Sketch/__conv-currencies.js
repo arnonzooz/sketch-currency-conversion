@@ -866,19 +866,16 @@ function convertMe() {
         }
 
         selectedLayers.forEach(function (layer) {
-          if (!isNaN(layer.text)) {
-            var _result = convert(layer.text, {
-              from: selectedCurrencies[0].currency,
-              to: selectedCurrencies[1].currency,
-              base: data.base,
-              rates: data.rates
-            });
-
-            var formattedResult = new Intl.NumberFormat({
-              maximumSignificantDigits: 3
-            }).format(_result);
-            layer.text = formattedResult.toString();
-          }
+          var result = convert(layer.text, {
+            from: selectedCurrencies[0].currency,
+            to: selectedCurrencies[1].currency,
+            base: data.base,
+            rates: data.rates
+          });
+          var formattedResult = new Intl.NumberFormat({
+            maximumSignificantDigits: 3
+          }).format(result);
+          layer.text = formattedResult.toString();
         });
       });
     });

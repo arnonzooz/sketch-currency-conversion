@@ -54,7 +54,6 @@ export function convertMe() {
           return console.log("error");
         }
         selectedLayers.forEach((layer) => {
-          if (!isNaN(layer.text)) {
             const result = convert(layer.text, {
               from: selectedCurrencies[0].currency,
               to: selectedCurrencies[1].currency,
@@ -65,7 +64,6 @@ export function convertMe() {
               maximumSignificantDigits: 3,
             }).format(result);
             layer.text = formattedResult.toString();
-          }
         });
       });
     });
