@@ -2,9 +2,9 @@
 
 ## Installation
 
-- [Download](../../releases/latest/download/strings-plugin.sketchplugin.zip) the latest release of the plugin
+- [Download](../../releases/latest/download/currency-plugin.sketchplugin.zip) the latest release of the plugin
 - Un-zip
-- Double-click on strings-plugin.sketchplugin
+- Double-click on currency-plugin.sketchplugin
 
 ## Development Guide
 
