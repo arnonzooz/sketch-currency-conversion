@@ -88,7 +88,7 @@ var exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/conv-currencies.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/api-currencies.js");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -375,217 +375,6 @@ module.exports = Promise;
 
 /***/ }),
 
-/***/ "./node_modules/cashify/dist/cashify.js":
-/*!**********************************************!*\
-  !*** ./node_modules/cashify/dist/cashify.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const convert_1 = __importDefault(__webpack_require__(/*! ./convert */ "./node_modules/cashify/dist/convert.js"));
-const parser_1 = __importDefault(__webpack_require__(/*! ./utils/parser */ "./node_modules/cashify/dist/utils/parser.js"));
-class Cashify {
-    constructor(options) {
-        this.options = options;
-    }
-    /**
-    * @param amount Amount of money you want to convert.
-    * @param options Conversion options.
-    * @return Conversion result.
-    */
-    convert(amount, options) {
-        // If provided `amount` is a string, use parsing
-        if (typeof amount === 'string') {
-            const data = parser_1.default(amount);
-            return convert_1.default(data.amount, { ...this.options, from: data.from, to: data.to, ...options });
-        }
-        return convert_1.default(amount, { ...this.options, ...options });
-    }
-}
-exports.default = Cashify;
-
-
-/***/ }),
-
-/***/ "./node_modules/cashify/dist/convert.js":
-/*!**********************************************!*\
-  !*** ./node_modules/cashify/dist/convert.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const get_rate_1 = __importDefault(__webpack_require__(/*! ./lib/get-rate */ "./node_modules/cashify/dist/lib/get-rate.js"));
-const parser_1 = __importDefault(__webpack_require__(/*! ./utils/parser */ "./node_modules/cashify/dist/utils/parser.js"));
-/**
-* @param amount Amount of money you want to convert.
-* @param options Conversion options.
-* @return Conversion result.
-*/
-function convert(amount, { from, to, base, rates }) {
-    var _a, _b;
-    // If provided `amount` is a string, use parsing
-    if (typeof amount === 'string') {
-        const data = parser_1.default(amount);
-        return (data.amount * 100) * get_rate_1.default(base, rates, (_a = data.from) !== null && _a !== void 0 ? _a : from, (_b = data.to) !== null && _b !== void 0 ? _b : to) / 100;
-    }
-    return (amount * 100) * get_rate_1.default(base, rates, from, to) / 100;
-}
-exports.default = convert;
-
-
-/***/ }),
-
-/***/ "./node_modules/cashify/dist/index.esm.js":
-/*!************************************************!*\
-  !*** ./node_modules/cashify/dist/index.esm.js ***!
-  \************************************************/
-/*! exports provided: Cashify, convert, parse */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _cashify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cashify */ "./node_modules/cashify/dist/cashify.js");
-/* harmony import */ var _cashify__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_cashify__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (default from non-harmony) */ __webpack_require__.d(__webpack_exports__, "Cashify", function() { return _cashify__WEBPACK_IMPORTED_MODULE_0___default.a; });
-/* harmony import */ var _convert__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./convert */ "./node_modules/cashify/dist/convert.js");
-/* harmony import */ var _convert__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_convert__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony reexport (default from non-harmony) */ __webpack_require__.d(__webpack_exports__, "convert", function() { return _convert__WEBPACK_IMPORTED_MODULE_1___default.a; });
-/* harmony import */ var _utils_parser__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/parser */ "./node_modules/cashify/dist/utils/parser.js");
-/* harmony import */ var _utils_parser__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_utils_parser__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony reexport (default from non-harmony) */ __webpack_require__.d(__webpack_exports__, "parse", function() { return _utils_parser__WEBPACK_IMPORTED_MODULE_2___default.a; });
-
-
-
-
-
-
-
-/***/ }),
-
-/***/ "./node_modules/cashify/dist/lib/get-rate.js":
-/*!***************************************************!*\
-  !*** ./node_modules/cashify/dist/lib/get-rate.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const has_key_1 = __importDefault(__webpack_require__(/*! ../utils/has-key */ "./node_modules/cashify/dist/utils/has-key.js"));
-/**
- * Get the conversion rate.
- * @param base Base currency.
- * @param rates Object containing currency rates (for example from an API, such as Open Exchange Rates).
- * @param from Currency from which you want to convert.
- * @param to Currency to which you want to convert.
- * @return Conversion result.
-*/
-function getRate(base, rates, from, to) {
-    if (from && to) {
-        // If `from` equals `base`, return the basic exchange rate for the `to` currency
-        if (from === base && has_key_1.default(rates, to)) {
-            return rates[to];
-        }
-        // If `to` equals `base`, return the basic inverse rate of the `from` currency
-        if (to === base && has_key_1.default(rates, from)) {
-            return 1 / rates[from];
-        }
-        // Otherwise, return the `to` rate multipled by the inverse of the `from` rate to get the relative exchange rate between the two currencies.
-        if (has_key_1.default(rates, from) && has_key_1.default(rates, to)) {
-            return rates[to] * (1 / rates[from]);
-        }
-        throw new Error('`rates` object does not contain either `from` or `to` currency!');
-    }
-    else {
-        throw new Error('Please specify the `from` and/or `to` currency or use parsing!');
-    }
-}
-exports.default = getRate;
-
-
-/***/ }),
-
-/***/ "./node_modules/cashify/dist/utils/has-key.js":
-/*!****************************************************!*\
-  !*** ./node_modules/cashify/dist/utils/has-key.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/**
- * Check if an object contains a key.
- * @param obj The object to check.
- * @param key The key to check for.
-*/
-function hasKey(object, key) {
-    return key in object;
-}
-exports.default = hasKey;
-
-
-/***/ }),
-
-/***/ "./node_modules/cashify/dist/utils/parser.js":
-/*!***************************************************!*\
-  !*** ./node_modules/cashify/dist/utils/parser.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/**
-* Expression parser
-* @param expression Expression you want to parse, ex. `10 usd to pln` or `€1.23 eur`
-* @return Object with parsing results
-*/
-function parse(expression) {
-    const amount = parseFloat(expression.replace(/[^\d-.]/g, '')) || undefined;
-    let from;
-    let to;
-    // Search for separating keyword (case insensitive) to split the expression into 2 parts
-    if (/to|in|as/i.exec(expression)) {
-        const firstPart = expression.slice(0, expression.search(/to|in|as/i)).toUpperCase().trim();
-        from = firstPart.replace(/[^A-Za-z]/g, '');
-        to = expression.slice(expression.search(/to|in|as/i) + 2).toUpperCase().trim();
-    }
-    else {
-        from = expression.replace(/[^A-Za-z]/g, '');
-    }
-    if (amount === undefined) {
-        throw new Error('Could not parse the `amount` argument. Make sure it includes at least a valid amount.');
-    }
-    return {
-        amount,
-        from: from.toUpperCase() || undefined,
-        to
-    };
-}
-exports.default = parse;
-
-
-/***/ }),
-
 /***/ "./node_modules/sketch-polyfill-fetch/lib/index.js":
 /*!*********************************************************!*\
   !*** ./node_modules/sketch-polyfill-fetch/lib/index.js ***!
@@ -849,85 +638,6 @@ var getCurrencies = function getCurrencies(context, base, callback) {
 
 /***/ }),
 
-/***/ "./src/conv-currencies.js":
-/*!********************************!*\
-  !*** ./src/conv-currencies.js ***!
-  \********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return convertMe; });
-/* harmony import */ var _api_currencies__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./api-currencies */ "./src/api-currencies.js");
-
-
-var sketch = __webpack_require__(/*! sketch/dom */ "sketch/dom");
-
-var UI = __webpack_require__(/*! sketch/ui */ "sketch/ui");
-
-var Settings = __webpack_require__(/*! sketch/settings */ "sketch/settings");
-
-var _require = __webpack_require__(/*! cashify */ "./node_modules/cashify/dist/index.esm.js"),
-    convert = _require.convert;
-
-var document = sketch.Document.getSelectedDocument();
-var selectedLayers = document.selectedLayers;
-var inputCancelled = false;
-var selectedCurrencies = [{
-  type: "source",
-  currency: null
-}, {
-  type: "target",
-  currency: null
-}];
-function convertMe() {
-  selectedCurrencies.forEach(function (currObj) {
-    if (!inputCancelled) {
-      UI.getInputFromUser("Select a " + currObj.type + " currency", {
-        initialValue: "EUR",
-        type: UI.INPUT_TYPE.selection,
-        possibleValues: Settings.sessionVariable("convRates").sort()
-      }, function (err, value) {
-        if (err) {
-          // most likely the user canceled the input
-          return inputCancelled = true;
-        }
-
-        currObj.currency = value;
-      });
-    }
-  });
-  Object(_api_currencies__WEBPACK_IMPORTED_MODULE_0__["getCurrencies"])("undefined", selectedCurrencies[0].currency, function (error, data) {
-    selectedLayers.forEach(function (layer) {
-      var result = convert(layer.text, {
-        from: selectedCurrencies[0].currency,
-        to: selectedCurrencies[1].currency,
-        base: data.base,
-        rates: data.rates
-      });
-      result = parseFloat(result);
-      var formattedResult = result.toLocaleString(undefined, {
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2
-      });
-      formattedResult = new Intl.NumberFormat({}).format(formattedResult);
-      layer.text = formattedResult;
-
-      if (!hasDecimals(layer.text)) {
-        layer.text = parseFloat(layer.text).toFixed(2);
-      }
-    });
-  });
-}
-
-function hasDecimals(n) {
-  var numberP = n - Math.floor(n) !== 0;
-  if (numberP) return true;else return false;
-}
-
-/***/ }),
-
 /***/ "buffer":
 /*!*************************!*\
   !*** external "buffer" ***!
@@ -936,17 +646,6 @@ function hasDecimals(n) {
 /***/ (function(module, exports) {
 
 module.exports = require("buffer");
-
-/***/ }),
-
-/***/ "sketch/dom":
-/*!*****************************!*\
-  !*** external "sketch/dom" ***!
-  \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require("sketch/dom");
 
 /***/ }),
 
@@ -988,6 +687,7 @@ module.exports = require("sketch/ui");
     }
   }
 }
+globalThis['getCurrencies'] = __skpm_run.bind(this, 'getCurrencies');
 globalThis['onRun'] = __skpm_run.bind(this, 'default')
 
-//# sourceMappingURL=__conv-currencies.js.map
+//# sourceMappingURL=api-currencies.js.map

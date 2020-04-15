@@ -1,6 +1,7 @@
+import { getCurrencies } from "./api-currencies";
 var sketch = require("sketch/dom");
 var UI = require("sketch/ui");
-
+var Settings = require("sketch/settings");
 const { convert } = require("cashify");
 
 let document = sketch.Document.getSelectedDocument();
@@ -18,67 +19,50 @@ const selectedCurrencies = [
   },
 ];
 
-export function convertMe() {
-  getCurrencyList((error, result) => {
-    if (error) {
-      return console.log(error);
-    }
-
-    selectedCurrencies.forEach((currObj) => {
-      if (!inputCancelled) {
-        UI.getInputFromUser(
-          "Select a " + currObj.type + " currency",
-          {
-            initialValue: "EUR",
-            type: UI.INPUT_TYPE.selection,
-            possibleValues: result.sort(),
-          },
-          (err, value) => {
-            if (err) {
-              // most likely the user canceled the input
-              return (inputCancelled = true);
-            }
-
-            currObj.currency = value;
+export default function convertMe() {
+  selectedCurrencies.forEach((currObj) => {
+    if (!inputCancelled) {
+      UI.getInputFromUser(
+        "Select a " + currObj.type + " currency",
+        {
+          initialValue: "EUR",
+          type: UI.INPUT_TYPE.selection,
+          possibleValues: Settings.sessionVariable("convRates").sort(),
+        },
+        (err, value) => {
+          if (err) {
+            // most likely the user canceled the input
+            return (inputCancelled = true);
           }
-        );
-      }
-    });
-
-    fetch(
-      "https://api.exchangeratesapi.io/latest?base=" +
-        selectedCurrencies[0].currency
-    ).then((response) => {
-      response.json().then((data) => {
-        if (data.error) {
-          return console.log("error");
+          currObj.currency = value;
         }
-        selectedLayers.forEach((layer) => {
-            const result = convert(layer.text, {
-              from: selectedCurrencies[0].currency,
-              to: selectedCurrencies[1].currency,
-              base: data.base,
-              rates: data.rates,
-            });
-            const formattedResult = new Intl.NumberFormat({
-              maximumSignificantDigits: 3,
-            }).format(result);
-            layer.text = formattedResult.toString();
+      );
+    }
+  });
+
+  getCurrencies("undefined", selectedCurrencies[0].currency, (error, data) => {
+      selectedLayers.forEach((layer) => {
+        let result = convert(layer.text, {
+          from: selectedCurrencies[0].currency,
+          to: selectedCurrencies[1].currency,
+          base: data.base,
+          rates: data.rates,
         });
+        result = result.toFixed(2)
+        let formattedResult = result.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+        formattedResult = new Intl.NumberFormat({}).format(formattedResult);
+        layer.text = formattedResult;
+        if (!hasDecimals(layer.text)) {
+          layer.text = parseFloat(layer.text).toFixed(2);
+        }
       });
-    });
+    
   });
 }
 
-function getCurrencyList(callback) {
-  fetch("https://api.exchangeratesapi.io/latest").then((response) => {
-    response.json().then((data) => {
-      if (data.error) {
-        return callback("Could not fetch exchange rates.", undefined);
-      }
-      // Add EUR since it is not included as EUR is the base
-      data.rates.EUR = 1;
-      callback(undefined, Object.keys(data.rates));
-    });
-  });
+function hasDecimals(n) {
+  let numberP = n - Math.floor(n) !== 0;
+
+  if (numberP) return true;
+  else return false;
 }

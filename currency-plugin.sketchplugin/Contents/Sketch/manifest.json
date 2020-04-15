@@ -8,8 +8,17 @@
       "name": "Convert Currencies",
       "identifier": "conv-currencies",
       "script": "__conv-currencies.js",
-      "handler": "convertMe",
       "shortcut": "ctrl shift a"
+    },
+    {
+      "script": "api-currencies.js",
+      "name": "Load Currency List",
+      "handlers": {
+        "actions": {
+          "OpenDocument": "getCurrencies"
+        }
+      },
+      "identifier": "load-currency-list"
     }
   ],
   "menu": {
