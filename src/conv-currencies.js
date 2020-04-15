@@ -48,10 +48,11 @@ export default function convertMe() {
           base: data.base,
           rates: data.rates,
         });
-        result = result.toFixed(2)
-        let formattedResult = result.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
-        formattedResult = new Intl.NumberFormat({}).format(formattedResult);
-        layer.text = formattedResult;
+        // const formattedResult = new Intl.NumberFormat({
+        //   maximumSignificantDigits: 3,
+        // }).format(result);
+        const formattedResult = result.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+        layer.text = formattedResult
         if (!hasDecimals(layer.text)) {
           layer.text = parseFloat(layer.text).toFixed(2);
         }

@@ -905,13 +905,14 @@ function convertMe() {
         to: selectedCurrencies[1].currency,
         base: data.base,
         rates: data.rates
-      });
-      result = parseFloat(result);
+      }); // const formattedResult = new Intl.NumberFormat({
+      //   maximumSignificantDigits: 3,
+      // }).format(result);
+
       var formattedResult = result.toLocaleString(undefined, {
         maximumFractionDigits: 2,
         minimumFractionDigits: 2
       });
-      formattedResult = new Intl.NumberFormat({}).format(formattedResult);
       layer.text = formattedResult;
 
       if (!hasDecimals(layer.text)) {
