@@ -819,32 +819,34 @@ module.exports = fetch;
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(fetch) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCurrencies", function() { return getCurrencies; });
+/* WEBPACK VAR INJECTION */(function(Promise, fetch) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCurrencies", function() { return getCurrencies; });
 var Settings = __webpack_require__(/*! sketch/settings */ "sketch/settings");
 
 var UI = __webpack_require__(/*! sketch/ui */ "sketch/ui");
 
-var getCurrencies = function getCurrencies(context, base, callback) {
-  var url = !base ? "https://api.exchangeratesapi.io/latest" : "https://api.exchangeratesapi.io/latest?base=" + base;
-  fetch(url).then(function (response) {
-    if (!response.ok) {
-      return callback(response.statusText, undefined);
-    }
-
-    response.json().then(function (data) {
-      // Add EUR since it is not included as EUR is the base
-      if (!base) {
-        data.rates.EUR = 1;
-        Settings.setSessionVariable('convRates', Object.keys(data.rates));
-      } else {
-        callback(undefined, data);
+var getCurrencies = function getCurrencies(context, base) {
+  return new Promise(function (resolve, reject) {
+    var url = !base ? "https://api.exchangeratesapi.io/latest" : "https://api.exchangeratesapi.io/latest?base=" + base;
+    fetch(url).then(function (response) {
+      if (!response.ok) {
+        reject(response.statusText);
       }
+
+      response.json().then(function (data) {
+        // Add EUR since it is not included as EUR is the base
+        if (!base) {
+          data.rates.EUR = 1;
+          Settings.setSessionVariable("convRates", Object.keys(data.rates));
+        } else {
+          resolve(data);
+        }
+      });
+    }).catch(function (error) {
+      UI.alert("Cannot Fetch Conversion Rates", "Hey there UX Engineer! Looks like there's no network. You'll have to convert all amounts manually, sorry.");
     });
-  }).catch(function (error) {
-    UI.alert("Cannot Fetch Conversion Rates", "Hey there UX Engineer! Looks like there's no network. You'll have to convert all amounts manually, sorry.");
   });
 };
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/sketch-polyfill-fetch/lib/index.js */ "./node_modules/sketch-polyfill-fetch/lib/index.js")))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@skpm/promise/index.js */ "./node_modules/@skpm/promise/index.js"), __webpack_require__(/*! ./node_modules/sketch-polyfill-fetch/lib/index.js */ "./node_modules/sketch-polyfill-fetch/lib/index.js")))
 
 /***/ }),
 
@@ -901,22 +903,15 @@ function convertMe() {
       });
     }
   });
-  Object(_api_currencies__WEBPACK_IMPORTED_MODULE_0__["getCurrencies"])("undefined", selectedCurrencies[0].currency, function (error, data) {
-    if (error) {
-      return UI.alert("Oops, something went wrong", error);
-    }
-
+  Object(_api_currencies__WEBPACK_IMPORTED_MODULE_0__["getCurrencies"])("undefined", selectedCurrencies[0].currency).then(function (result) {
     selectedLayers.forEach(function (layer) {
-      var result = convert(layer.text, {
+      var convResult = convert(layer.text, {
         from: selectedCurrencies[0].currency,
         to: selectedCurrencies[1].currency,
-        base: data.base,
-        rates: data.rates
-      }); // const formattedResult = new Intl.NumberFormat({
-      //   maximumSignificantDigits: 3,
-      // }).format(result);
-
-      var formattedResult = result.toLocaleString(undefined, {
+        base: result.base,
+        rates: result.rates
+      });
+      var formattedResult = convResult.toLocaleString(undefined, {
         maximumFractionDigits: 2,
         minimumFractionDigits: 2
       });
@@ -926,12 +921,14 @@ function convertMe() {
         layer.text = parseFloat(layer.text).toFixed(2);
       }
     });
+  }).catch(function (error) {
+    UI.alert("Oops, something went wrong", error);
   });
-}
 
-function hasDecimals(n) {
-  var numberP = n - Math.floor(n) !== 0;
-  if (numberP) return true;else return false;
+  function hasDecimals(n) {
+    var numberP = n - Math.floor(n) !== 0;
+    if (numberP) return true;else return false;
+  }
 }
 
 /***/ }),

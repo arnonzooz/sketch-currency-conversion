@@ -608,32 +608,34 @@ module.exports = fetch;
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(fetch) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCurrencies", function() { return getCurrencies; });
+/* WEBPACK VAR INJECTION */(function(Promise, fetch) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCurrencies", function() { return getCurrencies; });
 var Settings = __webpack_require__(/*! sketch/settings */ "sketch/settings");
 
 var UI = __webpack_require__(/*! sketch/ui */ "sketch/ui");
 
-var getCurrencies = function getCurrencies(context, base, callback) {
-  var url = !base ? "https://api.exchangeratesapi.io/latest" : "https://api.exchangeratesapi.io/latest?base=" + base;
-  fetch(url).then(function (response) {
-    if (!response.ok) {
-      return callback(response.statusText, undefined);
-    }
-
-    response.json().then(function (data) {
-      // Add EUR since it is not included as EUR is the base
-      if (!base) {
-        data.rates.EUR = 1;
-        Settings.setSessionVariable('convRates', Object.keys(data.rates));
-      } else {
-        callback(undefined, data);
+var getCurrencies = function getCurrencies(context, base) {
+  return new Promise(function (resolve, reject) {
+    var url = !base ? "https://api.exchangeratesapi.io/latest" : "https://api.exchangeratesapi.io/latest?base=" + base;
+    fetch(url).then(function (response) {
+      if (!response.ok) {
+        reject(response.statusText);
       }
+
+      response.json().then(function (data) {
+        // Add EUR since it is not included as EUR is the base
+        if (!base) {
+          data.rates.EUR = 1;
+          Settings.setSessionVariable("convRates", Object.keys(data.rates));
+        } else {
+          resolve(data);
+        }
+      });
+    }).catch(function (error) {
+      UI.alert("Cannot Fetch Conversion Rates", "Hey there UX Engineer! Looks like there's no network. You'll have to convert all amounts manually, sorry.");
     });
-  }).catch(function (error) {
-    UI.alert("Cannot Fetch Conversion Rates", "Hey there UX Engineer! Looks like there's no network. You'll have to convert all amounts manually, sorry.");
   });
 };
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/sketch-polyfill-fetch/lib/index.js */ "./node_modules/sketch-polyfill-fetch/lib/index.js")))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@skpm/promise/index.js */ "./node_modules/@skpm/promise/index.js"), __webpack_require__(/*! ./node_modules/sketch-polyfill-fetch/lib/index.js */ "./node_modules/sketch-polyfill-fetch/lib/index.js")))
 
 /***/ }),
 

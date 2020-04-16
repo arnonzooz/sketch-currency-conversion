@@ -21,7 +21,10 @@ const selectedCurrencies = [
 
 export default function convertMe() {
   if (!Settings.sessionVariable("convRates")) {
-    UI.alert("Could Not Fetch Currencies", "Hey there UX Engineer! Looks like I could not load the currency list. Try to disable and enable the plugin again.")
+    UI.alert(
+      "Could Not Fetch Currencies",
+      "Hey there UX Engineer! Looks like I could not load the currency list. Try to disable and enable the plugin again."
+    );
   }
   selectedCurrencies.forEach((currObj) => {
     if (!inputCancelled) {
@@ -43,33 +46,33 @@ export default function convertMe() {
     }
   });
 
-  getCurrencies("undefined", selectedCurrencies[0].currency, (error, data) => {
-      if (error) {
-        return UI.alert("Oops, something went wrong", error)
-      }
+  getCurrencies("undefined", selectedCurrencies[0].currency)
+    .then((result) => {
       selectedLayers.forEach((layer) => {
-        let result = convert(layer.text, {
+        let convResult = convert(layer.text, {
           from: selectedCurrencies[0].currency,
           to: selectedCurrencies[1].currency,
-          base: data.base,
-          rates: data.rates,
+          base: result.base,
+          rates: result.rates,
         });
-        // const formattedResult = new Intl.NumberFormat({
-        //   maximumSignificantDigits: 3,
-        // }).format(result);
-        const formattedResult = result.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
-        layer.text = formattedResult
+        const formattedResult = convResult.toLocaleString(undefined, {
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 2,
+        });
+        layer.text = formattedResult;
         if (!hasDecimals(layer.text)) {
           layer.text = parseFloat(layer.text).toFixed(2);
         }
       });
-    
-  });
-}
+    })
+    .catch((error) => {
+      UI.alert("Oops, something went wrong", error);
+    });
 
-function hasDecimals(n) {
-  let numberP = n - Math.floor(n) !== 0;
+  function hasDecimals(n) {
+    let numberP = n - Math.floor(n) !== 0;
 
-  if (numberP) return true;
-  else return false;
+    if (numberP) return true;
+    else return false;
+  }
 }
