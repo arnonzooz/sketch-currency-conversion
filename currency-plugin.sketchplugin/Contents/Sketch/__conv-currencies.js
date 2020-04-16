@@ -825,7 +825,6 @@ var Settings = __webpack_require__(/*! sketch/settings */ "sketch/settings");
 var UI = __webpack_require__(/*! sketch/ui */ "sketch/ui");
 
 var getCurrencies = function getCurrencies(context, base, callback) {
-  console.log(context);
   var url = !base ? "https://api.exchangeratesapi.io/latest" : "https://api.exchangeratesapi.io/latest?base=" + base;
   fetch(url).then(function (response) {
     if (!response.ok) {
@@ -838,13 +837,11 @@ var getCurrencies = function getCurrencies(context, base, callback) {
         data.rates.EUR = 1;
         Settings.setSessionVariable('convRates', Object.keys(data.rates));
       } else {
-        callback("undefined", data);
+        callback(undefined, data);
       }
     });
   }).catch(function (error) {
-    console.log(error);
     UI.alert("Cannot Fetch Conversion Rates", "Hey there UX Engineer! Looks like there's no network. You'll have to convert all amounts manually, sorry.");
-    console.log(error);
   });
 };
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/sketch-polyfill-fetch/lib/index.js */ "./node_modules/sketch-polyfill-fetch/lib/index.js")))
@@ -905,6 +902,10 @@ function convertMe() {
     }
   });
   Object(_api_currencies__WEBPACK_IMPORTED_MODULE_0__["getCurrencies"])("undefined", selectedCurrencies[0].currency, function (error, data) {
+    if (error) {
+      return UI.alert("Oops, something went wrong", error);
+    }
+
     selectedLayers.forEach(function (layer) {
       var result = convert(layer.text, {
         from: selectedCurrencies[0].currency,

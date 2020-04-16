@@ -44,6 +44,9 @@ export default function convertMe() {
   });
 
   getCurrencies("undefined", selectedCurrencies[0].currency, (error, data) => {
+      if (error) {
+        return UI.alert("Oops, something went wrong", error)
+      }
       selectedLayers.forEach((layer) => {
         let result = convert(layer.text, {
           from: selectedCurrencies[0].currency,
