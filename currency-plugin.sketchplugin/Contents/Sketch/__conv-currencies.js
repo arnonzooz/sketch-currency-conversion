@@ -889,7 +889,7 @@ function convertMe() {
   selectedCurrencies.forEach(function (currObj) {
     if (!inputCancelled) {
       UI.getInputFromUser("Select a " + currObj.type + " currency", {
-        initialValue: "EUR",
+        initialValue: currObj.type === "source" && Settings.sessionVariable("rememberRates") ? Settings.sessionVariable("rememberRates")[0].currency : currObj.type === "source" ? "EUR" : currObj.type === "target" && Settings.sessionVariable("rememberRates") ? Settings.sessionVariable("rememberRates")[1].currency : "EUR",
         type: UI.INPUT_TYPE.selection,
         possibleValues: Settings.sessionVariable("convRates").sort()
       }, function (err, value) {
@@ -902,6 +902,7 @@ function convertMe() {
       });
     }
   });
+  Settings.setSessionVariable("rememberRates", selectedCurrencies);
   Object(_api_currencies__WEBPACK_IMPORTED_MODULE_0__["getCurrencies"])(undefined, selectedCurrencies[0].currency).then(function (result) {
     selectedLayers.forEach(function (layer) {
       var convResult = convert(layer.text, {

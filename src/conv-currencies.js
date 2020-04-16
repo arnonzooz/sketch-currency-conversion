@@ -29,7 +29,7 @@ export default function convertMe() {
       UI.getInputFromUser(
         "Select a " + currObj.type + " currency",
         {
-          initialValue: "EUR",
+          initialValue: (currObj.type === "source" && Settings.sessionVariable("rememberRates")) ? Settings.sessionVariable("rememberRates")[0].currency : (currObj.type === "source") ? "EUR" : (currObj.type === "target" && Settings.sessionVariable("rememberRates")) ? Settings.sessionVariable("rememberRates")[1].currency : "EUR",
           type: UI.INPUT_TYPE.selection,
           possibleValues: Settings.sessionVariable("convRates").sort(),
         },
@@ -43,7 +43,8 @@ export default function convertMe() {
       );
     }
   });
-
+  
+  Settings.setSessionVariable("rememberRates", selectedCurrencies);
   getCurrencies(undefined, selectedCurrencies[0].currency)
     .then((result) => {
       selectedLayers.forEach((layer) => {
