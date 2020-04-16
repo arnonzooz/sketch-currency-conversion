@@ -1,10 +1,8 @@
 import { getCurrencies } from "./api-currencies";
-var sketch = require("sketch/dom");
-var UI = require("sketch/ui");
-var Settings = require("sketch/settings");
+const { Document, UI, Settings } = require("sketch")
 const { convert } = require("cashify");
 
-let document = sketch.Document.getSelectedDocument();
+let document = Document.getSelectedDocument();
 let selectedLayers = document.selectedLayers;
 let inputCancelled = false;
 
@@ -46,7 +44,7 @@ export default function convertMe() {
     }
   });
 
-  getCurrencies("undefined", selectedCurrencies[0].currency)
+  getCurrencies(undefined, selectedCurrencies[0].currency)
     .then((result) => {
       selectedLayers.forEach((layer) => {
         let convResult = convert(layer.text, {

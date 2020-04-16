@@ -863,16 +863,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _api_currencies__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./api-currencies */ "./src/api-currencies.js");
 
 
-var sketch = __webpack_require__(/*! sketch/dom */ "sketch/dom");
+var _require = __webpack_require__(/*! sketch */ "sketch"),
+    Document = _require.Document,
+    UI = _require.UI,
+    Settings = _require.Settings;
 
-var UI = __webpack_require__(/*! sketch/ui */ "sketch/ui");
+var _require2 = __webpack_require__(/*! cashify */ "./node_modules/cashify/dist/index.esm.js"),
+    convert = _require2.convert;
 
-var Settings = __webpack_require__(/*! sketch/settings */ "sketch/settings");
-
-var _require = __webpack_require__(/*! cashify */ "./node_modules/cashify/dist/index.esm.js"),
-    convert = _require.convert;
-
-var document = sketch.Document.getSelectedDocument();
+var document = Document.getSelectedDocument();
 var selectedLayers = document.selectedLayers;
 var inputCancelled = false;
 var selectedCurrencies = [{
@@ -903,7 +902,7 @@ function convertMe() {
       });
     }
   });
-  Object(_api_currencies__WEBPACK_IMPORTED_MODULE_0__["getCurrencies"])("undefined", selectedCurrencies[0].currency).then(function (result) {
+  Object(_api_currencies__WEBPACK_IMPORTED_MODULE_0__["getCurrencies"])(undefined, selectedCurrencies[0].currency).then(function (result) {
     selectedLayers.forEach(function (layer) {
       var convResult = convert(layer.text, {
         from: selectedCurrencies[0].currency,
@@ -944,14 +943,14 @@ module.exports = require("buffer");
 
 /***/ }),
 
-/***/ "sketch/dom":
-/*!*****************************!*\
-  !*** external "sketch/dom" ***!
-  \*****************************/
+/***/ "sketch":
+/*!*************************!*\
+  !*** external "sketch" ***!
+  \*************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require("sketch/dom");
+module.exports = require("sketch");
 
 /***/ }),
 
