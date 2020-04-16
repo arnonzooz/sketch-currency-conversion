@@ -20,6 +20,9 @@ const selectedCurrencies = [
 ];
 
 export default function convertMe() {
+  if (!Settings.sessionVariable("convRates")) {
+    UI.alert("Could Not Fetch Currencies", "Hey there UX Engineer! Looks like I could not load the currency list. Try to disable and enable the plugin again.")
+  }
   selectedCurrencies.forEach((currObj) => {
     if (!inputCancelled) {
       UI.getInputFromUser(

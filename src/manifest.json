@@ -15,7 +15,7 @@
       "name" : "Load Currency List",
        "handlers" : {
        "actions": {
-         "OpenDocument": "getCurrencies"
+          "Startup": "getCurrencies"
           }
       },
       "identifier" : "load-currency-list"

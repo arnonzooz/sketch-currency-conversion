@@ -825,6 +825,7 @@ var Settings = __webpack_require__(/*! sketch/settings */ "sketch/settings");
 var UI = __webpack_require__(/*! sketch/ui */ "sketch/ui");
 
 var getCurrencies = function getCurrencies(context, base, callback) {
+  console.log(context);
   var url = !base ? "https://api.exchangeratesapi.io/latest" : "https://api.exchangeratesapi.io/latest?base=" + base;
   fetch(url).then(function (response) {
     if (!response.ok) {
@@ -841,6 +842,7 @@ var getCurrencies = function getCurrencies(context, base, callback) {
       }
     });
   }).catch(function (error) {
+    console.log(error);
     UI.alert("Cannot Fetch Conversion Rates", "Hey there UX Engineer! Looks like there's no network. You'll have to convert all amounts manually, sorry.");
     console.log(error);
   });
@@ -882,6 +884,10 @@ var selectedCurrencies = [{
   currency: null
 }];
 function convertMe() {
+  if (!Settings.sessionVariable("convRates")) {
+    UI.alert("Could Not Fetch Currencies", "Hey there UX Engineer! Looks like I could not load the currency list. Try to disable and enable the plugin again.");
+  }
+
   selectedCurrencies.forEach(function (currObj) {
     if (!inputCancelled) {
       UI.getInputFromUser("Select a " + currObj.type + " currency", {
