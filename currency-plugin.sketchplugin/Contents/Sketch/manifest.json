@@ -5,7 +5,7 @@
   "version": "2.0",
   "commands": [
     {
-      "name": "Show me the Money",
+      "name": "Apply Conversion",
       "identifier": "conv-currencies",
       "script": "__conv-currencies.js",
       "shortcut": "ctrl shift a"

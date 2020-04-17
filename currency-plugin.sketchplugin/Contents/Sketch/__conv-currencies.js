@@ -875,11 +875,9 @@ var document = Document.getSelectedDocument();
 var selectedLayers = document.selectedLayers;
 var inputCancelled = false;
 var selectedCurrencies = [{
-  type: "source",
-  currency: null
+  type: "source"
 }, {
-  type: "target",
-  currency: null
+  type: "target"
 }];
 function convertMe() {
   if (!Settings.sessionVariable("convRates")) {
@@ -889,7 +887,7 @@ function convertMe() {
   selectedCurrencies.forEach(function (currObj) {
     if (!inputCancelled) {
       UI.getInputFromUser("Select a " + currObj.type + " currency", {
-        initialValue: currObj.type === "source" && Settings.sessionVariable("rememberRates") ? Settings.sessionVariable("rememberRates")[0].currency : currObj.type === "source" ? "EUR" : currObj.type === "target" && Settings.sessionVariable("rememberRates") ? Settings.sessionVariable("rememberRates")[1].currency : "EUR",
+        initialValue: currObj.type === "source" && Settings.sessionVariable(currObj.type + "Curr") ? Settings.sessionVariable(currObj.type + "Curr") : currObj.type === "source" ? "EUR" : currObj.type === "target" && Settings.sessionVariable(currObj.type + "Curr") ? Settings.sessionVariable(currObj.type + "Curr") : "EUR",
         type: UI.INPUT_TYPE.selection,
         possibleValues: Settings.sessionVariable("convRates").sort()
       }, function (err, value) {
@@ -898,16 +896,16 @@ function convertMe() {
           return inputCancelled = true;
         }
 
-        currObj.currency = value;
+        Settings.setSessionVariable(currObj.type + "Curr", value);
       });
     }
   });
   Settings.setSessionVariable("rememberRates", selectedCurrencies);
-  Object(_api_currencies__WEBPACK_IMPORTED_MODULE_0__["getCurrencies"])(undefined, selectedCurrencies[0].currency).then(function (result) {
+  Object(_api_currencies__WEBPACK_IMPORTED_MODULE_0__["getCurrencies"])(undefined, Settings.sessionVariable('sourceCurr')).then(function (result) {
     selectedLayers.forEach(function (layer) {
       var convResult = convert(layer.text, {
-        from: selectedCurrencies[0].currency,
-        to: selectedCurrencies[1].currency,
+        from: Settings.sessionVariable('sourceCurr'),
+        to: Settings.sessionVariable('targetCurr'),
         base: result.base,
         rates: result.rates
       });

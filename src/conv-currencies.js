@@ -6,16 +6,7 @@ let document = Document.getSelectedDocument();
 let selectedLayers = document.selectedLayers;
 let inputCancelled = false;
 
-const selectedCurrencies = [
-  {
-    type: "source",
-    currency: null,
-  },
-  {
-    type: "target",
-    currency: null,
-  },
-];
+const selectedCurrencies = [{type: "source"},{type: "target"}];
 
 export default function convertMe() {
   if (!Settings.sessionVariable("convRates")) {
@@ -29,28 +20,28 @@ export default function convertMe() {
       UI.getInputFromUser(
         "Select a " + currObj.type + " currency",
         {
-          initialValue: (currObj.type === "source" && Settings.sessionVariable("rememberRates")) ? Settings.sessionVariable("rememberRates")[0].currency : (currObj.type === "source") ? "EUR" : (currObj.type === "target" && Settings.sessionVariable("rememberRates")) ? Settings.sessionVariable("rememberRates")[1].currency : "EUR",
+          initialValue: (currObj.type === "source" && Settings.sessionVariable(currObj.type+"Curr")) ? Settings.sessionVariable(currObj.type+"Curr"): (currObj.type === "source") ? "EUR" : (currObj.type === "target" && Settings.sessionVariable(currObj.type+"Curr")) ? Settings.sessionVariable(currObj.type+"Curr") : "EUR",
           type: UI.INPUT_TYPE.selection,
-          possibleValues: Settings.sessionVariable("convRates").sort(),
+          possibleValues: Settings.sessionVariable("convRates").sort()
         },
         (err, value) => {
           if (err) {
             // most likely the user canceled the input
             return (inputCancelled = true);
           }
-          currObj.currency = value;
+          Settings.setSessionVariable(currObj.type+"Curr", value);
         }
       );
     }
   });
   
   Settings.setSessionVariable("rememberRates", selectedCurrencies);
-  getCurrencies(undefined, selectedCurrencies[0].currency)
+  getCurrencies(undefined, Settings.sessionVariable('sourceCurr'))
     .then((result) => {
       selectedLayers.forEach((layer) => {
         let convResult = convert(layer.text, {
-          from: selectedCurrencies[0].currency,
-          to: selectedCurrencies[1].currency,
+          from: Settings.sessionVariable('sourceCurr'),
+          to: Settings.sessionVariable('targetCurr'),
           base: result.base,
           rates: result.rates,
         });
