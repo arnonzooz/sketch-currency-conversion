@@ -874,6 +874,7 @@ var _require2 = __webpack_require__(/*! cashify */ "./node_modules/cashify/dist/
 var document = Document.getSelectedDocument();
 var selectedLayers = document.selectedLayers;
 var inputCancelled = false;
+var localeSetting = Settings.sessionVariable("selectedLocale") ? Settings.sessionVariable("selectedLocale") : undefined;
 var selectedCurrencies = [{
   type: "source"
 }, {
@@ -887,6 +888,7 @@ function convertMe() {
   selectedCurrencies.forEach(function (currObj) {
     if (!inputCancelled) {
       UI.getInputFromUser("Select a " + currObj.type + " currency", {
+        description: "Locale: " + (Settings.sessionVariable("selectedLocaleName") ? Settings.sessionVariable("selectedLocaleName") : "Default (Machine)"),
         initialValue: currObj.type === "source" && Settings.sessionVariable(currObj.type + "Curr") ? Settings.sessionVariable(currObj.type + "Curr") : currObj.type === "source" ? "EUR" : currObj.type === "target" && Settings.sessionVariable(currObj.type + "Curr") ? Settings.sessionVariable(currObj.type + "Curr") : "EUR",
         type: UI.INPUT_TYPE.selection,
         possibleValues: Settings.sessionVariable("convRates").sort()
@@ -909,7 +911,7 @@ function convertMe() {
         base: result.base,
         rates: result.rates
       });
-      var formattedResult = convResult.toLocaleString(undefined, {
+      var formattedResult = convResult.toLocaleString(localeSetting, {
         maximumFractionDigits: 2,
         minimumFractionDigits: 2
       });

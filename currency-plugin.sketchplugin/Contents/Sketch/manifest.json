@@ -11,6 +11,12 @@
       "shortcut": "ctrl shift a"
     },
     {
+      "name": "Set Locale",
+      "identifier": "set-locales",
+      "script": "__set-locales.js",
+      "shortcut": "ctrl shift l"
+    },
+    {
       "script": "api-currencies.js",
       "name": "Load Currency List",
       "handlers": {
@@ -19,12 +25,23 @@
         }
       },
       "identifier": "load-currency-list"
+    },
+    {
+      "script": "load-locales.js",
+      "name": "Load Locales",
+      "handlers": {
+        "actions": {
+          "Startup": "loadLocales"
+        }
+      },
+      "identifier": "load-locales"
     }
   ],
   "menu": {
     "title": "Convert Currencies",
     "items": [
-      "conv-currencies"
+      "conv-currencies",
+      "set-locales"
     ]
   },
   "description": "Sketch plugin for converting currencies",

@@ -5,7 +5,7 @@ const { convert } = require("cashify");
 let document = Document.getSelectedDocument();
 let selectedLayers = document.selectedLayers;
 let inputCancelled = false;
-
+let localeSetting = Settings.sessionVariable("selectedLocale") ? Settings.sessionVariable("selectedLocale") : undefined
 const selectedCurrencies = [{type: "source"},{type: "target"}];
 
 export default function convertMe() {
@@ -20,6 +20,7 @@ export default function convertMe() {
       UI.getInputFromUser(
         "Select a " + currObj.type + " currency",
         {
+          description: "Locale: " + (Settings.sessionVariable("selectedLocaleName") ? Settings.sessionVariable("selectedLocaleName") : "Default (Machine)"),
           initialValue: (currObj.type === "source" && Settings.sessionVariable(currObj.type+"Curr")) ? Settings.sessionVariable(currObj.type+"Curr"): (currObj.type === "source") ? "EUR" : (currObj.type === "target" && Settings.sessionVariable(currObj.type+"Curr")) ? Settings.sessionVariable(currObj.type+"Curr") : "EUR",
           type: UI.INPUT_TYPE.selection,
           possibleValues: Settings.sessionVariable("convRates").sort()
@@ -45,7 +46,7 @@ export default function convertMe() {
           base: result.base,
           rates: result.rates,
         });
-        const formattedResult = convResult.toLocaleString(undefined, {
+        const formattedResult = convResult.toLocaleString(localeSetting, {
           maximumFractionDigits: 2,
           minimumFractionDigits: 2,
         });
