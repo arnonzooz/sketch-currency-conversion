@@ -1,7 +1,6 @@
 import { getCurrencies } from "./api-currencies";
 const { Document, UI, Settings } = require("sketch");
 const { convert } = require("cashify");
-const validator = require("validator");
 
 let document = Document.getSelectedDocument();
 let selectedLayers = document.selectedLayers;
@@ -56,7 +55,6 @@ export default function convertMe() {
   getCurrencies(undefined, Settings.sessionVariable("sourceCurr"))
     .then((result) => {
       selectedLayers.forEach((layer) => {
-        if (validator.isNumeric(layer.text)) {
           let convResult = convert(layer.text, {
             from: Settings.sessionVariable("sourceCurr"),
             to: Settings.sessionVariable("targetCurr"),
@@ -71,7 +69,6 @@ export default function convertMe() {
           if (!hasDecimals(layer.text)) {
             layer.text = parseFloat(layer.text).toFixed(2);
           }
-        }
       });
     })
     .catch((error) => {
