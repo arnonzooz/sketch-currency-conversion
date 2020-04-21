@@ -108,7 +108,6 @@ var _require = __webpack_require__(/*! sketch */ "sketch"),
     Settings = _require.Settings;
 
 function setLocales() {
-  console.log(Settings.sessionVariable("selectedLocale"));
   UI.getInputFromUser("Select a locale", {
     description: "The choice of locale affects the symbol that will be used for the thousands separator used in digit grouping. To use a comma, choose US English. To use a point, choose German Germany.",
     initialValue: Settings.sessionVariable("selectedLocaleName") ? Settings.sessionVariable("selectedLocaleName") : "Default (Machine)",
