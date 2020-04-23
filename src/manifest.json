@@ -17,31 +17,39 @@
       "shortcut": "ctrl shift l"
     },
     {
-     "script" : "api-currencies.js",
-      "name" : "Load Currency List",
-       "handlers" : {
-       "actions": {
+      "script": "api-currencies.js",
+      "name": "Load Currency List",
+      "handlers": {
+        "actions": {
           "Startup": "getCurrencies"
-          }
+        }
       },
-      "identifier" : "load-currency-list"
+      "identifier": "load-currency-list"
+    },
+    {
+      "script": "load-locales.js",
+      "name": "Load Locales",
+      "handlers": {
+        "actions": {
+          "Startup": "loadLocales"
+        }
       },
-      {
-        "script" : "load-locales.js",
-         "name" : "Load Locales",
-          "handlers" : {
-          "actions": {
-             "Startup": "loadLocales"
-             }
-         },
-         "identifier" : "load-locales"
-         }       
+      "identifier": "load-locales"
+    },
+    {
+      "script": "set-plugin-rerun.js",
+      "name": "Set Plugin Rerun",
+      "handlers": {
+        "actions": {
+          "RunLastScript.begin": "setPluginRerunStart",
+          "RunLastScript.finish": "setPluginRerunFinish"
+        }
+      },
+      "identifier": "set-plugin-rerun"
+    }
   ],
   "menu": {
     "title": "Convert Currencies",
-    "items": [
-      "conv-currencies",
-      "set-locales"
-    ]
+    "items": ["conv-currencies", "set-locales"]
   }
 }

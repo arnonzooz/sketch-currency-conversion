@@ -881,28 +881,33 @@ var selectedCurrencies = [{
   type: "target"
 }];
 function convertMe() {
+  console.log(Settings.sessionVariable("currConvRerunTrigerred"));
+
   if (!Settings.sessionVariable("convRates")) {
     UI.alert("Could Not Fetch Currencies", "Hey there UX Engineer! Looks like I could not load the currency list. Try to disable and enable the plugin again.");
   }
 
-  selectedCurrencies.forEach(function (currObj) {
-    if (!inputCancelled) {
-      UI.getInputFromUser("Select a " + currObj.type + " currency", {
-        description: "Locale: " + (Settings.sessionVariable("selectedLocaleName") ? Settings.sessionVariable("selectedLocaleName") : "Default (Machine)"),
-        initialValue: currObj.type === "source" && Settings.sessionVariable(currObj.type + "Curr") ? Settings.sessionVariable(currObj.type + "Curr") : currObj.type === "source" ? "EUR" : currObj.type === "target" && Settings.sessionVariable(currObj.type + "Curr") ? Settings.sessionVariable(currObj.type + "Curr") : "EUR",
-        type: UI.INPUT_TYPE.selection,
-        possibleValues: Settings.sessionVariable("convRates").sort()
-      }, function (err, value) {
-        if (err) {
-          // most likely the user canceled the input
-          return inputCancelled = true;
-        }
+  if (!Settings.sessionVariable("currConvRerunTrigerred")) {
+    selectedCurrencies.forEach(function (currObj) {
+      if (!inputCancelled) {
+        UI.getInputFromUser("Select a " + currObj.type + " currency", {
+          description: "Locale: " + (Settings.sessionVariable("selectedLocaleName") ? Settings.sessionVariable("selectedLocaleName") : "Default (Machine)"),
+          initialValue: currObj.type === "source" && Settings.sessionVariable(currObj.type + "Curr") ? Settings.sessionVariable(currObj.type + "Curr") : currObj.type === "source" ? "EUR" : currObj.type === "target" && Settings.sessionVariable(currObj.type + "Curr") ? Settings.sessionVariable(currObj.type + "Curr") : "EUR",
+          type: UI.INPUT_TYPE.selection,
+          possibleValues: Settings.sessionVariable("convRates").sort()
+        }, function (err, value) {
+          if (err) {
+            // most likely the user canceled the input
+            return inputCancelled = true;
+          }
 
-        Settings.setSessionVariable(currObj.type + "Curr", value);
-      });
-    }
-  });
-  Settings.setSessionVariable("rememberRates", selectedCurrencies);
+          Settings.setSessionVariable(currObj.type + "Curr", value);
+        });
+      }
+    });
+    Settings.setSessionVariable("rememberRates", selectedCurrencies);
+  }
+
   Object(_api_currencies__WEBPACK_IMPORTED_MODULE_0__["getCurrencies"])(undefined, Settings.sessionVariable("sourceCurr")).then(function (result) {
     selectedLayers.forEach(function (layer) {
       var convResult = convert(layer.text, {
@@ -916,7 +921,6 @@ function convertMe() {
         minimumFractionDigits: 2
       });
       layer.text = formattedResult;
-      console.log(layer.text);
 
       if (!hasDecimals(layer.text)) {
         layer.text = parseFloat(layer.text).toFixed(2);

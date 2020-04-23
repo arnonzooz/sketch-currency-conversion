@@ -11,47 +11,52 @@ let localeSetting = Settings.sessionVariable("selectedLocale")
 const selectedCurrencies = [{ type: "source" }, { type: "target" }];
 
 export default function convertMe() {
+  console.log( Settings.sessionVariable("currConvRerunTrigerred"))
   if (!Settings.sessionVariable("convRates")) {
     UI.alert(
       "Could Not Fetch Currencies",
       "Hey there UX Engineer! Looks like I could not load the currency list. Try to disable and enable the plugin again."
     );
   }
-  selectedCurrencies.forEach((currObj) => {
-    if (!inputCancelled) {
-      UI.getInputFromUser(
-        "Select a " + currObj.type + " currency",
-        {
-          description:
-            "Locale: " +
-            (Settings.sessionVariable("selectedLocaleName")
-              ? Settings.sessionVariable("selectedLocaleName")
-              : "Default (Machine)"),
-          initialValue:
-            currObj.type === "source" &&
-            Settings.sessionVariable(currObj.type + "Curr")
-              ? Settings.sessionVariable(currObj.type + "Curr")
-              : currObj.type === "source"
-              ? "EUR"
-              : currObj.type === "target" &&
-                Settings.sessionVariable(currObj.type + "Curr")
-              ? Settings.sessionVariable(currObj.type + "Curr")
-              : "EUR",
-          type: UI.INPUT_TYPE.selection,
-          possibleValues: Settings.sessionVariable("convRates").sort(),
-        },
-        (err, value) => {
-          if (err) {
-            // most likely the user canceled the input
-            return (inputCancelled = true);
-          }
-          Settings.setSessionVariable(currObj.type + "Curr", value);
-        }
-      );
-    }
-  });
 
-  Settings.setSessionVariable("rememberRates", selectedCurrencies);
+  if (!Settings.sessionVariable("currConvRerunTrigerred")) {
+    selectedCurrencies.forEach((currObj) => {
+      if (!inputCancelled) {
+        UI.getInputFromUser(
+          "Select a " + currObj.type + " currency",
+          {
+            description:
+              "Locale: " +
+              (Settings.sessionVariable("selectedLocaleName")
+                ? Settings.sessionVariable("selectedLocaleName")
+                : "Default (Machine)"),
+            initialValue:
+              currObj.type === "source" &&
+              Settings.sessionVariable(currObj.type + "Curr")
+                ? Settings.sessionVariable(currObj.type + "Curr")
+                : currObj.type === "source"
+                ? "EUR"
+                : currObj.type === "target" &&
+                  Settings.sessionVariable(currObj.type + "Curr")
+                ? Settings.sessionVariable(currObj.type + "Curr")
+                : "EUR",
+            type: UI.INPUT_TYPE.selection,
+            possibleValues: Settings.sessionVariable("convRates").sort(),
+          },
+          (err, value) => {
+            if (err) {
+              // most likely the user canceled the input
+              return (inputCancelled = true);
+            }
+            Settings.setSessionVariable(currObj.type + "Curr", value);
+          }
+        );
+      }
+    });
+  
+    Settings.setSessionVariable("rememberRates", selectedCurrencies);
+  }
+
   getCurrencies(undefined, Settings.sessionVariable("sourceCurr"))
     .then((result) => {
       selectedLayers.forEach((layer) => {

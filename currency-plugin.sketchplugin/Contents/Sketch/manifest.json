@@ -35,6 +35,17 @@
         }
       },
       "identifier": "load-locales"
+    },
+    {
+      "script": "set-plugin-rerun.js",
+      "name": "Set Plugin Rerun",
+      "handlers": {
+        "actions": {
+          "RunLastScript.begin": "setPluginRerunStart",
+          "RunLastScript.finish": "setPluginRerunFinish"
+        }
+      },
+      "identifier": "set-plugin-rerun"
     }
   ],
   "menu": {
