@@ -11,7 +11,6 @@ let localeSetting = Settings.sessionVariable("selectedLocale")
 const selectedCurrencies = [{ type: "source" }, { type: "target" }];
 
 export default function convertMe() {
-  console.log( Settings.sessionVariable("currConvRerunTrigerred"))
   if (!Settings.sessionVariable("convRates")) {
     UI.alert(
       "Could Not Fetch Currencies",

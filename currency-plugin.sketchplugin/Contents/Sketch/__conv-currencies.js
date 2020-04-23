@@ -881,8 +881,6 @@ var selectedCurrencies = [{
   type: "target"
 }];
 function convertMe() {
-  console.log(Settings.sessionVariable("currConvRerunTrigerred"));
-
   if (!Settings.sessionVariable("convRates")) {
     UI.alert("Could Not Fetch Currencies", "Hey there UX Engineer! Looks like I could not load the currency list. Try to disable and enable the plugin again.");
   }
